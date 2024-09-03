@@ -47,16 +47,27 @@ class DolyameAPIClient
             RequestOptions::SSL_KEY => $sslKeyPath,
         ];
 
-        $credentials = base64_encode("$login:$password");
-
-        $this->client = new Client(
-            [
-                'base_uri' => $this->apiURL,
-                RequestOptions::HEADERS => [
-                    'Authorization' => "Basic $credentials"
+        if ($password && !$login) {
+            $this->client = new Client(
+                [
+                    'base_uri' => $this->apiURL,
+                    RequestOptions::HEADERS => [
+                        'Authorization' => "Bearer $password"
+                    ]
                 ]
-            ]
-        );
+            );
+        } else {
+            $credentials = base64_encode("$login:$password");
+
+            $this->client = new Client(
+                [
+                    'base_uri' => $this->apiURL,
+                    RequestOptions::HEADERS => [
+                        'Authorization' => "Basic $credentials"
+                    ]
+                ]
+            );
+        }
     }
 
     /**
